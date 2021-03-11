@@ -1,0 +1,25 @@
+name: Terraform Destroy
+on: [workflow_dispatch]
+
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+
+jobs:
+  terraform-destroy:
+    runs-on: ubuntu-latest
+    container:
+      image: fredsilvas/container_terraform_aws_cli
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Run Terraform Init
+        id: init
+        run: terraform init
+        continue-on-error: false
+
+      - name: Run Terraform Destroy
+        id: destroy
+        run: terraform destroy -auto-approve
+        continue-on-error: false
