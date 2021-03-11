@@ -12,17 +12,17 @@ variable "centro_de_custo" {
 
 variable "proprietario" {
   description = "Proprietário do Projeto"
-  default     = ""  
+  default     = ""
 }
 
 variable "chamado_interno" {
   description = "Numero do chamado relacionado a este projeto"
-  default     = "GLPI=XXXXX"  
+  default     = "GLPI=XXXXX"
 }
 
 variable "ambiente" {
   description = "Ambiente do Projeto"
-  default     = ""  
+  default     = ""
 }
 
 variable "projeto" {
@@ -32,22 +32,22 @@ variable "projeto" {
 
 variable "vpc" {
   description = "VPC em que este projeto está rodando"
-  default     = "All"  
+  default     = "All"
 }
 
 variable "responsavel_infra" {
   description = "Responsavel de Infra deste Projeto"
-  default     = ""  
+  default     = ""
 }
 
 variable "responsavel_dev" {
   description = "Responsavel de Sistemas deste Projeto"
-  default     = ""  
+  default     = ""
 }
 
 variable "responsavel_db" {
   description = "Responsavel de Banco de Dados"
-  default     = ""  
+  default     = ""
 }
 
 
@@ -69,5 +69,5 @@ variable "sns_email_infra_person_two" {
 ### VARIAVEIS AWS
 variable "aws_region" {
   description = "VPC AWS Region"
-	default     = "sa-east-1"
+  default     = "sa-east-1"
 }
