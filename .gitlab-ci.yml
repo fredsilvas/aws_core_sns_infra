@@ -1,0 +1,94 @@
+default:
+  image:
+    name: git.ifpr.edu.br:5050/infraestrutura/ifpr-devops/container_deploy/container_deploy_aws/container_terraform_aws_cli
+    entrypoint:
+      - /usr/bin/env
+      - "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+cache:
+  key: ${CI_COMMIT_SHA}
+  paths:
+    - .terraform
+  
+  
+stages:
+  - stg_init
+  - stg_validate
+  - stg_plan
+  - stg_apply
+  - stg_destroy
+
+
+# STAGE INIT
+jb-tf-init:
+  stage: stg_init
+  script:
+    - echo "Inicializando Terraform"
+    - terraform init
+  allow_failure: false
+  only:
+    changes:
+    - .gitlab-ci.yml
+    - "*.{tf}"
+
+
+# STAGE VALIDATE
+jb-tf-validate:
+  stage: stg_validate
+  script:
+    - echo "Validando o código do projeto"
+    - terraform validate
+  allow_failure: false
+  dependencies:
+    - jb-tf-init
+  only:
+    changes:
+    - .gitlab-ci.yml
+    - "*.{tf}"
+
+
+# STAGE PLAN
+jb-tf-plan:
+  stage: stg_plan
+  script:
+    - echo "Gerando o arquivo Terraform Plan 'tf.plan' "
+    - terraform plan -out tf.plan
+  when: always
+  allow_failure: false
+  dependencies:
+    - jb-tf-validate
+  artifacts:
+    paths:
+      - tf.plan
+  only:
+    changes:
+    - .gitlab-ci.yml
+    - "*.{tf}"
+
+
+# STAGE APPLY
+jb-tf-apply:
+  stage: stg_apply
+  script:
+    - echo "Aplicando as configurações definidas no arquivo tf.plan"
+    - terraform apply -auto-approve tf.plan
+  when: always
+  allow_failure: false
+  dependencies:
+    - jb-tf-plan
+  only:
+    changes:
+    - .gitlab-ci.yml
+    - "*.{tf}"
+
+
+# STAGE DESTROY
+jb-tf-destroy:
+  stage: stg_destroy
+  script:
+    - echo "Destruindo todas as configurações. Esta ação é irreversível"
+    - terraform destroy -auto-approve
+  when: manual
+  # only:
+  #   refs:
+  #     - maintainers
